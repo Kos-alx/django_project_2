@@ -1,0 +1,75 @@
+from news.models import *
+u1 = User.objects.create_user(username='Alex')
+u2 = User.objects.create_user(username='Max')
+Author.objects.create(authorUser=u1)
+Author.objects.create(authorUser=u2)
+Category.objects.create(name='IT')
+Category.objects.create(name='politics')
+Category.objects.create(name='economics')
+Category.objects.create(name='history')
+u1 = Author.objects.get(id=1)
+u2 = Author.objects.get(id=2)
+Post.objects.create(author=u1, categoryType = 'NW', title = 'title news №1', text = 'some text of news №1')
+Post.objects.create(author=u1, title = 'title article №1', text = 'some text of article №1')
+Post.objects.create(author=u2, title = 'title article №2', text = 'some text of article №2')
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1))
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=2))
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=3))
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=4))
+Comment.objects.create(commentPost = Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, text = 'smth text')
+Comment.objects.create(commentPost = Post.objects.get(id=2), commentUser=Author.objects.get(id=1).authorUser, text = 'first comment on second post')
+Comment.objects.create(commentPost = Post.objects.get(id=2), commentUser=Author.objects.get(id=2).authorUser, text = 'second comment on second post')
+Comment.objects.create(commentPost = Post.objects.get(id=3), commentUser=Author.objects.get(id=2).authorUser, text = 'first comment on third post')
+Post.objects.get(id=1).like()
+Post.objects.get(id=1).like()
+Post.objects.get(id=1).like()
+Post.objects.get(id=1).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).dislike()
+Post.objects.get(id=3).like()
+Post.objects.get(id=3).dislike()
+Post.objects.get(id=3).dislike()
+Post.objects.get(id=3).dislike()
+Post.objects.get(id=3).dislike()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=2).dislike()
+Comment.objects.get(id=2).dislike()
+Comment.objects.get(id=2).dislike()
+Comment.objects.get(id=2).dislike()
+Comment.objects.get(id=2).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).dislike()
+Author.objects.get(id=1).update_rating()
+Author.objects.get(id=2).update_rating()
+
+
+first = Author.objects.all().order_by('-ratingAuthor')[0]
+print(first.authorUser.username, first.ratingAuthor)
+
+firstpost = Post.objects.all().order_by('-rating')[0]
+dat = firstpost.dateCreation.strftime('%d.%m.%Y')
+name = firstpost.author.authorUser.username
+rating = firstpost.author.ratingAuthor
+title = firstpost.title
+prev = firstpost.preview()
+print(dat, name, rating, title, prev, sep='\n')
+
+
+comments = firstpost.comment_set.all()
+for com in comments:
+    dat = com.dateCreation.strftime('%d.%m.%Y')
+    name = com.commentUser.username
+    rate = com.rating
+    text = com.text
+    print(dat, name, rate, text, sep='\n')
