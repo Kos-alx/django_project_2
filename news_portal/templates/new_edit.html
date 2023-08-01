@@ -6,12 +6,16 @@ New_edit
 {% endblock title %}
 
 {% block content %}
-<h1>Добавить или редактировать новость</h1>
+{% if request.path == '/news/create/' %}  {# Проверяем текущий путь запроса #}
+<h1>Добавить новость</h1>
+{% else %}
+<h1>Редактировать новость</h1>
+{% endif %}
 <hr>
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Save" />
+    <input type="submit" value="Сохранить" />
 </form>
 
 {% endblock content %}

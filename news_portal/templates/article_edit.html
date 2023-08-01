@@ -6,12 +6,16 @@ Article_edit
 {% endblock title %}
 
 {% block content %}
-<h1>Добавить или редактировать статью</h1>
+{% if request.path == '/articles/create/' %}  {# Проверяем текущий путь запроса #}
+<h1>Добавить статью</h1>
+{% else %}
+<h1>Редактировать статью</h1>
+{% endif %}
 <hr>
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Save" />
+    <input type="submit" value="Сохранить" />
 </form>
 
 {% endblock content %}

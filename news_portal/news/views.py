@@ -2,7 +2,7 @@ from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import PostForm, ArticleForm
+from .forms import PostForm
 from .models import Post
 from .filters import PostFilter
 
@@ -117,6 +117,7 @@ class NewCreate(CreateView):
     model = Post
     template_name = 'new_edit.html'
 
+
     def form_valid(self, form):
         post = form.save(commit=False)
         post.categoryType = 'NW'
@@ -124,9 +125,9 @@ class NewCreate(CreateView):
 
 
 class ArticleCreate(CreateView):
-    form_class = ArticleForm
+    form_class = PostForm
     model = Post
-    template_name = 'new_edit.html'
+    template_name = 'article_edit.html'
 
     def form_valid(self, form):
         post = form.save(commit=False)

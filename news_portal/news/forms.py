@@ -11,19 +11,14 @@ class PostForm(forms.ModelForm):
             'text',
             'author',
         ]
+        labels = {
+            'title': 'Название',
+            'text': 'Текст',
+            'author': 'Автор',
+        }
 
     def clean(self):
         cleaned_data = super().clean()
         return cleaned_data
 
-class ArticleForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = [
-            'title',
-            'text',
-            'author',
-        ]
-    def clean(self):
-        cleaned_data = super().clean()
-        return cleaned_data
+
