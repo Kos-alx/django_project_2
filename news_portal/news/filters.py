@@ -7,13 +7,13 @@ class PostFilter(FilterSet):
     title_contains = CharFilter(
         field_name='title',
         lookup_expr='icontains',
-        label='Найти в новостях',  # Задаем пользовательское название для поля title
+        label='Найти',
     )
 
     added_after = DateTimeFilter(
         field_name='dateCreation',
         lookup_expr='gt',
-        label='Дата публикации позже',  # Задаем пользовательское название для поля dateCreation
+        label='Дата позже',
         widget=DateTimeInput(
             format='%Y-%m-%dT%H:%M',
             attrs={'type': 'datetime-local'},
