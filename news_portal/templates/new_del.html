@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+{% load censor_filter %}
+
+{% block title %}
+New_edit
+{% endblock title %}
+
+{% block content %}
+{% if object.categoryType == 'AR' %}
+    <h1>Удалить статью</h1>
+{% else %}
+    <h1>Удалить новость</h1>
+{% endif %}
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>Удаляем "{{ object.title }}"?</p>
+    <input type="submit" value="Delete" />
+</form>
+
+
+{% endblock content %}

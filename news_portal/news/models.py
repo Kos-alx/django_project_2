@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
 
 
 # Create your models here.
@@ -14,12 +15,10 @@ class Author(models.Model):
         if postRat.get('postRating'):
             pRat += postRat.get('postRating')
 
-
         commentRat = self.authorUser.comment_set.all().aggregate(commentRating=Sum('rating'))
         cRat = 0
         if commentRat.get('commentRating'):
             cRat += commentRat.get('commentRating')
-
 
         caRat = 0
         posts = self.post_set.all()
@@ -30,6 +29,7 @@ class Author(models.Model):
 
         self.ratingAuthor = pRat * 3 + cRat + caRat
         self.save()
+
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -60,6 +60,16 @@ class Post(models.Model):
 
     def preview(self):
         return self.text[0:123] + '...'
+
+    def __str__(self):
+        return self.title
+
+
+    def get_absolute_url(self):
+        if self.categoryType == 'NW':  # Если категория равна 'Новость'
+            return reverse('new_detail', args=[str(self.id)])
+        elif self.categoryType == 'AR':  # Если категория равна 'Статья'
+            return reverse('article_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):

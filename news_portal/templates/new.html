@@ -1,0 +1,13 @@
+
+{% extends 'flatpages/default.html' %}
+{% load censor_filter %}
+
+{% block title %}
+New
+{% endblock title %}
+
+{% block content %}
+<h4>{{ new.title|censor }}</h4>
+<h6>{{ new.dateCreation|date:'d M Y' }}</h6>
+<p>{{ new.text|censor }}</p>
+{% endblock content %}

@@ -1,0 +1,73 @@
+{% extends 'flatpages/default.html' %}
+{% load censor_filter %}
+{% load custom_tags %}
+
+{% block title %}
+Articles
+{% endblock title %}
+
+
+{% block content %}
+{% if request.path == '/articles/search/' %}  {# Проверяем текущий путь запроса #}
+    <form action="" method="get" >
+        {{ filterset.form.non_field_errors }}
+        {{ filterset.form.name__icontains.errors }}
+       <br>
+       {{ filterset.form.as_p }}
+       {# Добавим кнопку отправки данных формы #}
+
+       <input type="submit" value="Найти" class="mt-3 btn-primary"/>
+    </form>
+{% endif %}
+
+{% if articles %}
+<h2>Статей у нас сегодня: {{ paginator.count }}</h2>
+<table>
+    <tr>
+    <td>
+        Название статьи
+    </td>
+    <td>
+        Дата публикации
+    </td>
+    <td>
+        Краткое содержание
+    </td>
+    </tr>
+    {% for article in articles %}
+    <tr>
+        <td>{{ article.title|censor }}</td>
+        <td>{{ article.dateCreation|date:'d M Y' }}</td>
+        <td>{{ article.text|truncatechars:20|censor }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% else %}
+    <h2>Новостей нет</h2>
+{% endif %}
+
+
+<center>
+{% if page_obj.has_previous %}
+       {# Для каждой ссылки пагинации указываем обработку через новый тег #}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+</center>
+
+{% endblock content %}
