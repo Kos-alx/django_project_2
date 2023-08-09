@@ -1,9 +1,10 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import PostForm
-from .models import Post
+from .models import Post, Author
 from .filters import PostFilter
 
 
@@ -111,7 +112,8 @@ class ArticleDetail(DetailView):
         return obj
 
 
-class NewCreate(CreateView):
+class NewCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
     # Класс для создания новой новости
     form_class = PostForm
     model = Post
@@ -121,10 +123,15 @@ class NewCreate(CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.categoryType = 'NW'
+        author, created = Author.objects.get_or_create(authorUser=self.request.user)
+        post.author = author
+        post.save()
+
         return super().form_valid(form)
 
 
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'article_edit.html'
@@ -132,28 +139,34 @@ class ArticleCreate(CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.categoryType = 'AR'
+        post.author = self.request.user
+        post.save()
         return super().form_valid(form)
 
 
-class NewEdit(UpdateView):
+class NewEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'new_edit.html'
 
 
-class ArticleEdit(UpdateView):
+class ArticleEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'article_edit.html'
 
 
-class NewDelete(DeleteView):
+class NewDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
     model = Post
     template_name = 'new_del.html'
     success_url = reverse_lazy('news_list')
 
 
-class ArticleDelete(DeleteView):
+class ArticleDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
     model = Post
     template_name = 'new_del.html'
     success_url = reverse_lazy('articles_list')

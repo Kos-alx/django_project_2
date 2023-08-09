@@ -22,6 +22,9 @@ Articles
 
 {% if articles %}
 <h2>Статей у нас сегодня: {{ paginator.count }}</h2>
+{% if perms.news.add_post %}
+<a href="{% url 'article_create' %}">Добавить статью</a>
+{% endif %}
 <table>
     <tr>
     <td>
@@ -36,9 +39,17 @@ Articles
     </tr>
     {% for article in articles %}
     <tr>
-        <td>{{ article.title|censor }}</td>
+        <td>{{ article.title|truncatechars:80|censor }}</td>
         <td>{{ article.dateCreation|date:'d M Y' }}</td>
         <td>{{ article.text|truncatechars:20|censor }}</td>
+        <td>
+        {% if perms.news.change_post %}
+        <a href="{% url 'article_edit' pk=article.id%}">Изменить</a>
+        {% endif %}
+        {% if perms.news.delete_post %}
+        <a href="{% url 'article_delete' pk=article.id%}">Удалить</a>
+        {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>

@@ -9,12 +9,10 @@ class PostForm(forms.ModelForm):
         fields = [
             'title',
             'text',
-            'author',
         ]
         labels = {
             'title': 'Название',
             'text': 'Текст',
-            'author': 'Автор',
         }
 
     def clean(self):

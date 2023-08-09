@@ -23,6 +23,9 @@ News
 
 {% if news %}
 <h2>Новостей у нас сегодня: {{ paginator.count }}</h2>
+{% if perms.news.add_post %}
+<a href="{% url 'new_create' %}">Добавить статью</a>
+{% endif %}
 <table>
     <tr>
     <td>
@@ -37,9 +40,17 @@ News
     </tr>
     {% for new in news %}
     <tr>
-        <td>{{ new.title|censor }}</td>
+        <td>{{ new.title|truncatechars:80|censor }}</td>
         <td>{{ new.dateCreation|date:'d M Y' }}</td>
         <td>{{ new.text|truncatechars:20|censor }}</td>
+        <td>
+        {% if perms.news.change_post %}
+        <a href="{% url 'new_edit' pk=new.id%}">Изменить</a>
+        {% endif %}
+        {% if perms.news.delete_post %}
+        <a href="{% url 'new_delete' pk=new.id%}">Удалить</a>
+        {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>
